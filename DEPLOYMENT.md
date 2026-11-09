@@ -166,7 +166,53 @@ sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 
 ---
 
-## 5. Option 4: Cloud PaaS Deployment (Render / Railway / GCP Cloud Run)
+## 5. Option 4: Vercel (Frontend) + Vercel (Backend)
+
+Vercel should be configured as two projects because the frontend is a Vite static site and the backend is a Flask Function. The old root-level multi-service configuration has been removed because it is not the standard Vercel project layout.
+
+### Backend project
+
+1. Import the repository into Vercel and create a project named `ai-cover-letter-generator-api`.
+2. Set **Root Directory** to `backend`.
+3. Vercel will detect `wsgi.py` and the Python runtime. Do not use the Waitress server for this project.
+4. Add these environment variables:
+   - `GEMINI_API_KEY`
+   - `GEMINI_MODEL` (for example `gemini-3.8-flash`)
+   - `DEMO_MODE` (`true` for a no-key demo deployment, otherwise `false`)
+   - `SECRET_KEY` (a long random value)
+5. Deploy and copy the resulting backend URL, for example `https://ai-cover-letter-generator-api.vercel.app`.
+
+### Frontend project
+
+1. Create a second Vercel project from the same repository named `ai-cover-letter-generator`.
+2. Set **Root Directory** to `frontend`.
+3. The included `frontend/vercel.json` rewrites `/api/*` to the backend project.
+4. In the frontend project, set `BACKEND_URL` to the backend hostname only, without `https://` or a trailing slash (for example `ai-cover-letter-generator-api.vercel.app`).
+5. Deploy. The frontend and API are then available from one browser origin, so the existing relative `/api` calls continue to work.
+
+With the Vercel CLI, the equivalent commands are:
+
+```bash
+cd backend
+vercel --prod
+
+cd ../frontend
+vercel --prod
+```
+
+Set `BACKEND_URL` in the frontend Vercel project before deploying. Verify both deployments with:
+
+```bash
+curl -f https://ai-cover-letter-generator-api.vercel.app/api/health
+```
+
+### Important Vercel limitations
+
+- Vercel Functions are request-based and ephemeral; uploaded files must be processed during the request and must not be stored on the local filesystem.
+- Keep resume uploads at or below the configured 5 MB limit.
+- Use `DEMO_MODE=true` until a valid Gemini API key is configured.
+
+## 6. Option 5: Cloud PaaS Deployment (Render / Railway / GCP Cloud Run)
 
 ### Render
 1. Create a **New Web Service** pointing to your repository.
@@ -190,7 +236,7 @@ gcloud run deploy ai-cover-letter \
 
 ---
 
-## 6. Environment Variables Reference
+## 7. Environment Variables Reference
 
 | Variable | Default | Purpose |
 | :--- | :--- | :--- |
@@ -206,7 +252,7 @@ gcloud run deploy ai-cover-letter \
 
 ---
 
-## 7. Operational Health Check & Monitoring
+## 8. Operational Health Check & Monitoring
 
 The server includes a dedicated health and diagnostic endpoint:
 ```http

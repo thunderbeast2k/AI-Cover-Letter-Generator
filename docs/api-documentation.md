@@ -16,8 +16,8 @@ Checks backend connectivity and service configuration.
   "service": "AI Cover Letter Generator API",
   "version": "1.0.0",
   "config": {
-    "model": "gpt-4o-mini",
-    "has_openai_key": true,
+    "model": "gemini-3.8-flash",
+    "has_gemini_key": true,
     "demo_mode": false,
     "max_upload_size_mb": 5.0
   }
