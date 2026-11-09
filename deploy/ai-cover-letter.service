@@ -1,0 +1,25 @@
+[Unit]
+Description=AI Cover Letter Generator Production Server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/ai-cover-letter-generator/backend
+Environment="PATH=/var/www/ai-cover-letter-generator/backend/venv/bin"
+EnvironmentFile=/var/www/ai-cover-letter-generator/backend/.env
+ExecStart=/var/www/ai-cover-letter-generator/backend/venv/bin/python serve.py --host 127.0.0.1 --port 5000 --threads 8
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+# Security sandboxing
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

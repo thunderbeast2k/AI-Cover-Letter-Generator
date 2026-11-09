@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai_cover_letter_generator
+    restart: unless-stopped
+    ports:
+      - "${PORT:-5000}:5000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.8-flash}
+      - DEMO_MODE=${DEMO_MODE:-false}
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-in-production}
+      - FLASK_HOST=0.0.0.0
+      - PORT=5000
+      - WAITRESS_THREADS=8
+    env_file:
+      - ./backend/.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - app_temp_uploads:/app/backend/temp_uploads
+
+volumes:
+  app_temp_uploads:
