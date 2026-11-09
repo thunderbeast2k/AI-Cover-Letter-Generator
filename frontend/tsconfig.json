@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "ignoreDeprecations": "6.0",
 
     /* Linting */
     "strict": true,
@@ -21,7 +20,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }

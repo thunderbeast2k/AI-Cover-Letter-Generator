@@ -191,6 +191,30 @@ The frontend currently has six Vitest tests covering drafts, resume uploads, and
 
 ## Production
 
+### Vercel services
+
+The repository includes a root [vercel.json](vercel.json) configured as two Vercel services:
+
+- `backend`: Flask service rooted at `backend`, publicly routed under `/api/*`
+- `frontend`: Vite service rooted at `frontend`, publicly routed for all other paths
+
+There are no internal service bindings because the frontend calls the backend through relative `/api` URLs and the backend does not call another repository service.
+
+Configure the backend service environment variables in Vercel:
+
+```text
+GEMINI_API_KEY
+GEMINI_MODEL
+DEMO_MODE
+SECRET_KEY
+```
+
+Deploy with the Vercel CLI or by importing the repository into Vercel. For local multi-service testing, use:
+
+```powershell
+vercel dev
+```
+
 ### Windows
 
 Build and start the production server from the repository root:
